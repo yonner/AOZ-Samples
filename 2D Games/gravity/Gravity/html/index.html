@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style type="text/css">
+		/* acme-regular - latin */
+@font-face {
+  font-family: 'Acme';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./resources/fonts/google/acme-v9-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Acme Regular'), local('Acme-Regular'),
+       url('./resources/fonts/google/acme-v9-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./resources/fonts/google/acme-v9-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./resources/fonts/google/acme-v9-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('./resources/fonts/google/acme-v9-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./resources/fonts/google/acme-v9-latin-regular.svg#Acme') format('svg'); /* Legacy iOS */
+}
+
+		body 
+		{
+  			margin: 0;
+  			overflow: hidden;
+			background-color:#000000;
+			font-family: acme,sans-serif;
+		}
+		</style>
+		<script src="./run/amal.js"></script>
+		<script src="./run/amaltranspiler.js"></script>
+		<script src="./run/banks.js"></script>
+		<script src="./run/bob.js"></script>
+		<script src="./run/dos.js"></script>
+		<script src="./run/errors.js"></script>
+		<script src="./run/files.js"></script>
+		<script src="./run/filesystem.js"></script>
+		<script src="./run/fontfaceobserver.standalone.js"></script>
+		<script src="./run/fonts.js"></script>
+		<script src="./run/renderer.js"></script>
+		<script src="./run/screen.js"></script>
+		<script src="./run/sprite.js"></script>
+		<script src="./run/textwindow.js"></script>
+		<script src="./run/utilities.js"></script>
+		<script src="./run/v1_0_textwindows.js"></script>
+		<script src="./run/v1_0_sounds.js"></script>
+		<script src="./run/v1_0_screens.js"></script>
+		<script src="./run/v1_0_maths.js"></script>
+		<script src="./run/v1_0_bobs.js"></script>
+		<script src="./run/v1_0_banks.js"></script>
+		<script src="./run/howler.js"></script>
+		<script src="./run/howler.spatial.min.js"></script>
+		<script src="./run/aoz.js"></script>
+		<script src="./run/application.js"></script>
+
+	</head>
+
+	<body>
+		<canvas id="AOZCanvas">
+			<p>Your browser does not support Canvas.</p>
+		</canvas>
+		<script>
+			window.addEventListener( "load", function()
+			{
+				window.application = new Application( 'AOZCanvas' );
+			}, false );
+		</script>
+	</body>
+</html>

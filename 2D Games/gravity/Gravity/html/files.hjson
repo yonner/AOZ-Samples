@@ -1,0 +1,105 @@
+{
+  version: 0.9.3.1 - 21/01/2020
+  rootPath: c:/users/hp/documents/aoz studio applications/applications/gravity/html
+  infos:
+  {
+    "\"run/application.js_saver\"": -1793717325
+    "\"resources/images/1.js_saver\"": 1087582950
+    "\"resources/images/2.js_saver\"": 609377002
+    "\"resources/images/3.js_saver\"": -1525878637
+    "\"resources/images/4.js_saver\"": -1714100036
+    "\"resources/samples/1.js_saver\"": 31356162
+    "\"resources/samples/2.js_saver\"": -1071574319
+    "\"resources/samples/3.js_saver\"": 525345699
+    "\"resources/samples/4.js_saver\"": -1986928059
+    "\"resources/samples/5.js_saver\"": 704510902
+    "\"resources/fonts/amiga/ammolite.js_saver\"": -377556105
+    "\"resources/fonts/amiga/arial.js_saver\"": 456407662
+    "\"resources/fonts/amiga/courier.js_saver\"": -245634134
+    "\"resources/fonts/amiga/diamond.js_saver\"": -740222469
+    "\"resources/fonts/amiga/emerald.js_saver\"": 2076906619
+    "\"resources/fonts/amiga/garnet.js_saver\"": 126819619
+    "\"resources/fonts/amiga/helvetica.js_saver\"": -679038432
+    "\"resources/fonts/amiga/onyx.js_saver\"": 2096673766
+    "\"resources/fonts/amiga/opal.js_saver\"": 192615431
+    "\"resources/fonts/amiga/peridot.js_saver\"": 1526607668
+    "\"resources/fonts/amiga/ruby.js_saver\"": 1676137408
+    "\"resources/fonts/amiga/sapphire.js_saver\"": 615151406
+    "\"resources/fonts/amiga/times.js_saver\"": 334907491
+    "\"resources/fonts/amiga/topaz.js_saver\"": -1688963414
+    "\"resources/filesystem/application_0.js_saver\"": 273633237
+    "\"run/resources/cursor.js_saver\"": 1476588932
+    "\"run/amal.js_saver\"": -1686352944
+    "\"run/amaltranspiler.js_saver\"": 633666647
+    "\"run/aoz.js_saver\"": -1286036363
+    "\"run/banks.js_saver\"": -625539891
+    "\"run/bob.js_saver\"": -1989354868
+    "\"run/dos.js_saver\"": 2068503406
+    "\"run/errors.js_saver\"": -1576712311
+    "\"run/files.js_saver\"": 235563299
+    "\"run/filesystem.js_saver\"": -1926472648
+    "\"run/fontfaceobserver.standalone.js_saver\"": 1941667313
+    "\"run/fonts.js_saver\"": 378519338
+    "\"run/renderer.js_saver\"": 326945498
+    "\"run/screen.js_saver\"": -1391097456
+    "\"run/sprites.js_saver\"": -217819145
+    "\"run/textwindow.js_saver\"": 540620982
+    "\"run/utilities.js_saver\"": 1760322928
+    "\"index.html_saver\"": -13245449
+    "\"run/resources/full_screen.png_saver\"":
+    {
+      size: 996
+      date: 2019-08-07T03:22:50.000Z
+    }
+    "\"run/resources/small_screen.png_saver\"":
+    {
+      size: 983
+      date: 2019-08-07T03:22:38.000Z
+    }
+    "\"resources/v1_0_sounds/5.samples/1.bell.js_saver\"":
+    {
+      size: 68011
+      date: 2020-01-22T11:28:29.062Z
+    }
+    "\"resources/v1_0_sounds/5.samples/2.boom.js_saver\"":
+    {
+      size: 86019
+      date: 2020-01-22T11:28:29.123Z
+    }
+    "\"resources/v1_0_sounds/5.samples/3.shoot.js_saver\"":
+    {
+      size: 33732
+      date: 2020-01-22T11:28:29.157Z
+    }
+    "\"run/resources/star_night.jpeg_saver\"":
+    {
+      size: 2829668
+      date: 2019-06-26T09:46:46.000Z
+    }
+    "\"run/v1_0_bobs.js_saver\"":
+    {
+      size: 2038
+      date: 2020-01-22T11:28:27.399Z
+    }
+    "\"run/v1_0_screens.js_saver\"":
+    {
+      size: 2056
+      date: 2020-01-22T11:28:28.740Z
+    }
+    "\"run/v1_0_sounds.js_saver\"":
+    {
+      size: 6440
+      date: 2020-01-22T11:28:28.997Z
+    }
+    "\"run/howler.js_saver\"":
+    {
+      size: 104345
+      date: 2019-07-05T18:53:14.000Z
+    }
+    "\"run/howler.spatial.min.js_saver\"":
+    {
+      size: 9336
+      date: 2019-07-05T18:53:14.000Z
+    }
+  }
+}

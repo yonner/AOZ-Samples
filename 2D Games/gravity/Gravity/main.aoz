@@ -1,0 +1,774 @@
+'
+'
+'    (C) Tomas Stenström 2020
+'
+'     W is throttle, A,D to turn, space to shoot some
+'
+'
+'
+#manifest:"amiga"
+#emulation:"a1200"
+#speed:"fast"
+#displayWidth:1024
+#displayHeight:768
+#googleFont:"acme"
+#fullScreen:true
+
+
+Screen Open 0,screen width,screen height,32,Lowres 'open the screen'
+palette $0,$FFF,$777,$222 'a simple palette'
+Double Buffer 
+Autoback 0
+
+MAXENTS=300 'maximum number of entities'
+BGSTARS=180 'number of background stars'
+SCALE=0
+
+{
+   this.vars.SCALE=this.aoz.currentScreen.scale.x;
+}
+
+Dim BSTARS#(BGSTARS,3) 'background stars'
+
+For t=0 to BGSTARS-1
+   BSTARS#(t,2)=Rnd(4)+2
+   BSTARS#(t,0)=10000+Rnd(320*BSTARS#(t,2))
+   BSTARS#(t,1)=10000+Rnd(256*BSTARS#(t,2))
+next t
+
+
+' Entities (shots, engine flares, smoke when target hit)'
+Dim ENTX#(MAXENTS)   'x position'
+Dim ENTY#(MAXENTS)   'y position'
+Dim ENTMX#(MAXENTS)  'x velocity'
+Dim ENTMY#(MAXENTS)  'y velocity'
+Dim ENTTYPE(MAXENTS) 'type of entity'
+Dim ENTROT(MAXENTS)  'rotation'
+Dim ENTTIME(MAXENTS) 'number of frames the entity stays before being removed'
+
+Dim splash(500,40)
+
+Gosub CREATETITLE
+
+' level entities (circle enclosing, circular obstacles)'
+' TODO: remove these as it's probably pointless to have two separate set of arrays doing '
+' the same things'
+Dim LEVELENTX#(MAXENTS)
+Dim LEVELENTY#(MAXENTS)
+Dim LEVELENTMX#(MAXENTS)
+Dim LEVELENTMY#(MAXENTS)
+Dim LEVELENTTYPE(MAXENTS)
+Dim LEVELENTTIME(MAXENTS)
+NUMLEVELENT=0
+
+
+' ship variables'
+SHIPX#=160 'x position: ship is supposed to be centered in the screen'
+SHIPY#=128 'y position'
+ROT=90   'ship angle of rotation'
+ROTSPEED=6 'speed to turn with'
+SHIELD=100 'the ships shield power, will decrease if colliding or being hit in other ways'
+HEALTH=100 'the ships health'
+SHOWSHIELD=0
+
+'other variables'
+AIR#=0.01
+
+MAXSPEED=5 'maximum ship speed'
+ZO=6
+GRAV=40 'gravitational factor: decrease for more gravity force'
+ENGINE=8 'Engine power: decrease for more power'
+ENGINER=ENGINE*2 'reverse engine power: decrease for more power'
+NUMENT=0
+SHIPXY#=0
+OFFSETX#=10000
+OFFSETY#=10000
+GROUNDED=False
+SDELAY=0
+CDIST#=0
+CHECKY#=0
+BX#=0
+BY#=0
+SPAWNENTPOS=0
+brot#=0
+
+Degree 
+
+
+'spawn the objects in this level'
+'todo: some kind of loading of levels'
+
+NUMLEVELENT=5
+LEVELENTX#(0)=9500
+LEVELENTY#(0)=9500
+LEVELENTTYPE(0)=1
+LEVELENTTIME(0)=90
+LEVELENTX#(1)=10000
+LEVELENTY#(1)=10400
+LEVELENTTYPE(1)=1
+LEVELENTTIME(1)=90
+LEVELENTX#(2)=10400
+LEVELENTY#(2)=10400
+LEVELENTTYPE(2)=1
+LEVELENTTIME(2)=90
+LEVELENTX#(3)=9800
+LEVELENTY#(3)=10400
+LEVELENTTYPE(3)=1
+LEVELENTTIME(3)=90
+LEVELENTX#(4)=10800
+LEVELENTY#(4)=10400
+LEVELENTTYPE(4)=1
+LEVELENTTIME(4)=90
+LEVELENTX#(4)=10200
+LEVELENTY#(4)=10100
+LEVELENTTYPE(4)=2
+LEVELENTTIME(4)=900
+
+MAXENTS=MAXENTS-1
+QUIT=0
+FC=0
+FCDELAY=10
+
+Global FC,FCDELAY
+
+LEFTKEY=32
+RIGHTKEY=34
+FORWARDKEY=17
+BACKWARDSKEY=33
+SHOOTKEY=64
+
+
+set paint 0
+Cls 0
+Timer=0
+EDMODE=False
+
+
+' spawn some "enemies" using ENT=30'
+For T=0 To 5
+    ENT=30
+    Gosub SPAWNENT
+Next T
+
+'hot spots for the ship and the shots
+Hot Spot 1,95,70
+Hot Spot 2,65,70
+Hot Spot 3,7,62
+Hot Spot 5,65,70
+
+'start in edmode (currently showing the title screen)'
+EDMODE=True
+
+FL=Timer
+
+Repeat 'Main loop'
+   cls 0 'clear the screen'
+   A$=Inkey$ 'get some input'
+   If Key State(64) and EDMODE=True 'toggle edmode (not implemented yet)'
+      If EDMODE=False : EDMODE=True : Else : EDMODE=False : End If 
+   End If 
+
+   If Mouse Key=1 and EDMODE=True 'not really doing anything yet this'
+      X=X Screen(X Mouse)
+      Y=Y Screen(Y Mouse)
+      Rem Text 10,40,Str$(X)+","+Str$(Y) 
+      OFFSETX#=OFFSETX#-(SHIPX#-X)
+      OFFSETY#=OFFSETY#-(SHIPY#-Y)
+      While Mouse Key=1 : Wend 
+   End If 
+
+  
+   if EDMODE=False
+      If Key State(LEFTKEY) 'A key pressed, rotating left'
+         Add ROT,-ROTSPEED,0 to 360 'rotation in degrees 0-360'
+      End If 
+      If Key State(34) 'D key pressed, rotating right'
+         Add ROT,ROTSPEED,0 to 360
+      End If 
+      If key State(FORWARDKEY) 'W key pressed, accelerating' 
+         GASON=GASON-1 'delay the sound so we dont play it each frame'
+         GROUNDED=False 'taking off - not on the ground any more'
+         If (Abs(BX#+Cos(ROT)/ENGINE)+Abs(BY#+Sin(ROT)/ENGINE))/2<MAXSPEED 'keep us below MAXSPEED'
+            BX#=BX#+Cos(ROT)/ENGINE 'if below MAXSPEED, add engine power to ship velocity'
+            BY#=BY#+Sin(ROT)/ENGINE
+         End If
+         For T=0 To 4 'spawn some stuff from the engine'
+            ENT=11
+            Gosub SPAWNENT
+         Next T
+         if GASON<=0 : sam play 4 : GASON=8 : End If 'play an engine sound'
+      End If 
+      If key State(BACKWARDSKEY) 'S key pressed, reversing' 
+         GASON=GASON-1 'delay the sound so we dont play it each frame'
+         GROUNDED=False 'taking off - not on the ground any more'
+         If (Abs(BX#-Cos(ROT)/ENGINER)+Abs(BY#-Sin(ROT)/ENGINER))/2<(MAXSPEED) 'keep us below MAXSPEED'
+            BX#=BX#-Cos(ROT)/ENGINER 'if below MAXSPEED, add engine power to ship velocity'
+            BY#=BY#-Sin(ROT)/ENGINER
+         End If
+         For T=0 To 2 'spawn some stuff from the engine'
+            ENT=12
+            Gosub SPAWNENT
+         Next T
+         if GASON<=0 : sam play 4 : GASON=8 : End If 'play an engine sound'
+      End If 
+      If Key State(SHOOTKEY) and SDELAY<0 'fire key pressed, shooting'
+         ENT=20
+         SDELAY=8 'delay so we dont fire to often'
+         Sam play 1
+         Gosub SPAWNENT
+      End If 
+      If GRAV>0 and GROUNDED=False and EDMODE=False
+         If (Abs(BX#+Cos(270)/GRAV)+Abs(BY#+Sin(270)/GRAV))/2<MAXSPEED
+            BX#=BX#+Cos(270)/GRAV
+            BY#=BY#+Sin(270)/GRAV
+         End If
+         If BX#>0 And BX#-AIR#<MAXSPEED
+            BX#=BX#-AIR#
+         Else 
+            If BX#+AIR#<MAXSPEED
+               BX#=BX#+AIR#
+            End If
+         End If 
+         If BY#>0 and BY#-AIR#<MAXSPEED
+            BY#=BY#-AIR#
+         Else 
+            If BY#+AIR#<MAXSPEED
+               BY#=BY#+AIR#
+            End If
+         End If 
+      Else
+         If GROUNDED=True
+            If Abs(BX#)<0.3 and Abs(BY#)<0.3
+               BX#=0 : BY#=0 : ROT=90
+            End If
+         End IF
+      End If 
+   End if
+
+   If GROUNDED=False 'since the ship is in the center of the screen change the offsets'
+      OFFSETX#=OFFSETX#-BX#
+      OFFSETY#=OFFSETY#-BY#
+   End If
+
+   Gosub _UPDATEBACKGROUND 'update the background stars'
+
+   If EDMODE=True 'Display title and info about controls'
+      Gosub UPDATETITLE
+   End If
+
+   Gosub _UPDATEENTS 'update the entities, shots fired and enemies and engine smoke'
+  
+   'adjusted rotation value to show the bob correctly'
+   ROT2=360-ROT+90 'reverse the rotation and add 90 degrees'
+   If ROT2>360 : ROT2=ROT2-360 : End If 'if more than 360, decrease by 360 to beginning of rotation'
+   If ROT2<0 : ROT2=ROT2+360 : End If 'if less than 0, increas by 360 to end of rotation'
+
+   Paste Bob SHIPX#,SHIPY#,2,0.1,0.1,ROT2 'draw the ship'
+
+   If SHOWSHIELD>0 'show the force shield as long as SHOWSHIELD value is above 0'
+      Paste Bob SHIPX#,SHIPY#,5,0.15,0.15
+      Dec SHOWSHIELD 'decrease SHOWSHIELD by 1'
+   End If
+
+   Gosub _UPDATELEVELENTS 'updating the level entities'
+
+   If EDMODE=False
+      Ink 1,0
+      Set Font "acme",20
+      Text 10,30,str$(SHIELD)+"%"
+      text 255,30,str$(HEALTH)+"%"
+      Set Font "acme",8
+      Text 10,10,"Shield"
+      text 255,10,"Health"
+   End If
+
+   Screen Swap 'swap the screens for flickerfree display'
+   while FL+2>(Timer) : Wend 'limit the framerate: *not even sure this is the correct way of doing this*'
+   Wait vbl 
+   FL=Timer
+   
+   Dec SDELAY 'decrease the shoot delay'
+Until QUIT
+
+End   'end program' 
+
+UPDATETITLE:
+brot#=brot#+0.2 'create a moving background'
+If brot#>360 : brot#=0 : End If
+ROT=brot#
+For t=0 To BGSTARS
+   BSTARS#(t,0)=BSTARS#(t,0)+cos(brot#)*3
+   BSTARS#(t,1)=BSTARS#(t,1)+sin(brot#)*3
+Next t   
+For T=0 To 4 'spawn some stuff from the engine'
+   ENT=11
+   Gosub SPAWNENT
+Next T 
+Ink 1,0
+Set Font "acme",30
+Text 70,52,"Gravity Shooter" 
+For y=1 To 30
+   For x=0 To 399
+      d=splash(x,y) : d2=splash(x,y-1)
+      If d>0 and d2=0
+         o=rnd(40)
+         If o=1
+            ENT=10
+            Gosub SPAWNENT
+            ROTO=90
+            ENTMX#(SPAWNENTPOS)=Cos(ROTO)*3+(rnd(10)/20)
+            ENTMY#(SPAWNENTPOS)=Sin(ROTO)*3+(rnd(10)/20)
+            ENTTIME(SPAWNENTPOS)=6+rnd(4)
+            ENTX#(SPAWNENTPOS)=x+70+OFFSETX#
+            ENTY#(SPAWNENTPOS)=y+30+OFFSETY#
+         End If
+      End If
+   Next x
+Next y
+'Paste Bob 30,100,4,0.4,0.4
+Set Font "acme",20
+Text 105,180,"W to accelerate"
+Text 105,200,"A and D to turn"
+text 105,220,"Space to shoot"
+Set Font "acme",10
+FCDELAY=12
+Proc SHOWWARNING[120,240,"press space to begin"]
+Return
+
+_CLEARENTS:
+ENTPOS=0
+Repeat 
+   ENTPOS=ENTPOS+1
+   If ENTTYPE(ENTPOS)>0
+      If ENTTYPE(ENTPOS)=10
+         Ink 0
+          circle ENTX#(ENTPOS),ENTY#(ENTPOS),5-ENTTIME(ENTPOS)/2
+      End If 
+      If ENTTYPE(ENTPOS)=11
+         Ink 0
+          plot ENTX#(ENTPOS),ENTY#(ENTPOS)
+      End If 
+      If ENTTYPE(ENTPOS)=20
+         Ink 0
+          plot ENTX#(ENTPOS),ENTY#(ENTPOS)
+      End If 
+   End If 
+Until ENTPOS>MAXENTS
+Return 
+
+_UPDATEBACKGROUND:
+For t=0 To BGSTARS
+   If (BSTARS#(t,0)-OFFSETX#)<0 : BSTARS#(t,0)=BSTARS#(t,0)+320*BSTARS#(t,2) : End If
+   If (BSTARS#(t,0)-OFFSETX#)>320*BSTARS#(t,2) : BSTARS#(t,0)=BSTARS#(t,0)-320*BSTARS#(t,2) : End If
+   If (BSTARS#(t,1)-OFFSETY#)<0 : BSTARS#(t,1)=BSTARS#(t,1)+256*BSTARS#(t,2) : End If
+   If (BSTARS#(t,1)-OFFSETY#)>256*BSTARS#(t,2) : BSTARS#(t,1)=BSTARS#(t,1)-256*BSTARS#(t,2) : End If
+         Ink Int(BSTARS#(t,2)/2)
+         plot (BSTARS#(t,0)-OFFSETX#)/BSTARS#(t,2),(BSTARS#(t,1)-OFFSETY#)/BSTARS#(t,2)
+Next t
+Return
+
+_UPDATELEVELENTS:
+TEMPX=0 : TEMPY=0
+LPOS=0 : GROUNDED=False
+If NUMLEVELENT>0
+   Repeat 
+    If LEVELENTTYPE(LPOS)>0
+      If LEVELENTTYPE(LPOS)=2
+          Ink 5,0
+          for t=0 to 3
+          TEMPX=LEVELENTX#(LPOS)-OFFSETX#
+          TEMPY=LEVELENTY#(LPOS)-OFFSETY#
+          TEMPR=((LEVELENTTIME(LPOS)*SCALE)+t*148)
+         'Circle LEVELENTX#(LPOS)-OFFSETX#,LEVELENTY#(LPOS)-OFFSETY#,LEVELENTTIME(LPOS)
+         {
+                     //var grd = this.aoz.currentScreen.context.createRadialGradient(this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y,2,this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y, this.vars.TEMPR);                     
+                     //grd.addColorStop(0, this.aoz.currentScreen.getColorString( this.aoz.currentScreen.getInk() ));
+                     //grd.addColorStop(1, "black");
+                     this.aoz.currentScreen.startDrawing();
+                     this.aoz.currentScreen.context.strokeStyle = "#AA0000";
+	                  this.aoz.currentScreen.context.lineWidth = 150;
+                     //this.aoz.currentScreen.context.fillStyle = grd;
+                  	this.aoz.currentScreen.context.beginPath();
+                     this.aoz.currentScreen.context.arc( this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y, this.vars.TEMPR, 0, 2*3.1431 );
+                     //this.aoz.currentScreen.context.fill();
+	                  this.aoz.currentScreen.context.stroke();
+                    	this.aoz.currentScreen.context.closePath();
+	                  this.aoz.currentScreen.endDrawing();      
+                     this.aoz.currentScreen.context.lineWidth = ( this.aoz.currentScreen.scale.x + this.aoz.currentScreen.scale.y ) / 1.5;
+              }
+         next t
+
+         _MYSPEED#=(abs(BX#)+abs(BY#))/2
+         CHECKX#=LEVELENTX#(LPOS)-OFFSETX#
+         CHECKY#=LEVELENTY#(LPOS)-OFFSETY#
+         CSIZE#=LEVELENTTIME(LPOS)-37
+         POSOX#=Abs(SHIPX#-CHECKX#)
+         POSOY#=Abs(SHIPY#-CHECKY#)
+         POSOX#=POSOX#*POSOX#
+         POSOY#=POSOY#*POSOY#
+         _TDIST#=POSOX#+POSOY#
+         _TDIST#=sqr(_TDIST#)
+         If _TDIST#>CSIZE#-10
+            _DISTX#=(LEVELENTX#(LPOS)-OFFSETX#)-(SHIPX#)
+            _DISTY#=(LEVELENTY#(LPOS)-OFFSETY#)-(SHIPY#)
+            _SPEEDX#=_DISTX#/_TDIST#
+            _SPEEDY#=_DISTY#/_TDIST#
+            if _SPEEDX#>0 : _SPEEDX#=0-_SPEEDX# : Else : _SPEEDX#=abs(_SPEEDX#) : End if
+            if _SPEEDY#>0 : _SPEEDY#=0-_SPEEDY# : Else : _SPEEDY#=abs(_SPEEDY#) : End if
+            totspeed#=_MYSPEED#
+            if totspeed#<0.4 : totspeed#=0.4 : end if
+            BX#=_SPEEDX#*totspeed#
+            BY#=_SPEEDY#*totspeed#
+            'BX#=0 : BY#=0
+         End IF
+      End If
+      If(LEVELENTX#(LPOS)-OFFSETX#)>-200 and(LEVELENTX#(LPOS)-OFFSETX#)+320<850
+         If(LEVELENTY#(LPOS)-OFFSETY#)>-200 and(LEVELENTY#(LPOS)-OFFSETY#)+256<800
+            If LEVELENTTYPE(LPOS)=1
+               Ink 5,0
+               TEMPX=LEVELENTX#(LPOS)-OFFSETX#
+               TEMPY=LEVELENTY#(LPOS)-OFFSETY#
+               TEMPR=(LEVELENTTIME(LPOS))*SCALE
+                {
+                     //var grd = this.aoz.currentScreen.context.createLinearGradient(0, 0, 170, 0);
+                     var grd = this.aoz.currentScreen.context.createRadialGradient(this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y,2,this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y, this.vars.TEMPR);                     
+                     grd.addColorStop(0, this.aoz.currentScreen.getColorString( this.aoz.currentScreen.getInk() ));
+                     grd.addColorStop(1, "black");
+                     this.aoz.currentScreen.startDrawing();
+                     //this.aoz.currentScreen.context.strokeStyle = this.aoz.currentScreen.getColorString( this.aoz.currentScreen.getInk() );
+                     this.aoz.currentScreen.context.strokeStyle = "#000000";
+                     //this.context.globalAlpha = this.getColorAlpha( this.aoz.currentScreen.getInk() );
+	                  //this.context.globalCompositeOperation = this.getCompositeOperation();
+	                  //this.context.setLineDash( this.linePattern );
+	                  this.aoz.currentScreen.context.lineWidth = ( this.aoz.currentScreen.scale.x + this.aoz.currentScreen.scale.y ) / 1.5;
+                     //this.aoz.currentScreen.context.fillStyle = this.aoz.currentScreen.getColorString( this.aoz.currentScreen.getInk() );
+                     this.aoz.currentScreen.context.fillStyle = grd;
+                  	this.aoz.currentScreen.context.beginPath();
+	                  //this.aoz.currentScreen.context.ellipse( this.vars.TEMPX, this.vars.TEMPY, this.vars.TEMPR, this.vars.TEMPR, 0, this.vars.TEMPR, this.vars.TEMPR );
+                     this.aoz.currentScreen.context.arc( this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y, this.vars.TEMPR, 0, 2*3.14 );
+                     //this.aoz.currentScreen.context.fillRect( this.vars.TEMPX, this.vars.TEMPY, this.vars.TEMPR, this.vars.TEMPR );
+                     //this.aoz.currentScreen.context.fillRect( 10, 10, 200, 200 );
+                     this.aoz.currentScreen.context.fill();
+	                  this.aoz.currentScreen.context.stroke();
+	                  //this.aoz.currentScreen.context.fillStyle = this.getColorString( this.aoz.currentScreen.getInk() );
+                    	this.aoz.currentScreen.context.closePath();
+                     
+	                  this.aoz.currentScreen.endDrawing();      
+              }
+              'Circle LEVELENTX#(LPOS)-OFFSETX#,LEVELENTY#(LPOS)-OFFSETY#,LEVELENTTIME(LPOS)
+              
+               'Paint LEVELENTX#(LPOS)-OFFSETX#,LEVELENTY#(LPOS)-OFFSETY#,LEVELENTTIME(LPOS)
+               CHECKX#=LEVELENTX#(LPOS)-OFFSETX#
+               CHECKY#=LEVELENTY#(LPOS)-OFFSETY#
+               CSIZE#=LEVELENTTIME(LPOS)
+               If SHIPX#>CHECKX#-CSIZE#-10 and SHIPX#<CHECKX#+CSIZE#+10 and SHIPY#>CHECKY#-CSIZE#-10 and SHIPY#<CHECKY#+CSIZE#+10
+                  CDIST#=CSIZE#
+                  POSOX#=Abs(Abs(SHIPX#)-Abs(CHECKX#))
+                  POSOY#=Abs(Abs(SHIPY#)-Abs(CHECKY#))
+                  Rem Text 10,50,Str$(((POSOX#*POSOX#)+(POSOY#*POSOY#))) 
+                  
+                  If(((POSOX#*POSOX#)+(POSOY#*POSOY#))/100)<CDIST#
+                     Rem Text 10,30,"KOLLISION :"+Str$((Abs((Abs(SHIPX#)-Abs(CHECKX#))+(Abs(SHIPY#)-Abs(CHECKY#)))*3.14)/2) 
+                     Rem Text 10,40,Str$(CDIST#*2)
+                     If CHECKY#<SHIPY#
+                        If BX#>0 : BX#=0-BX#
+                        Else 
+                           BX#=Abs(BX#)
+                        End If 
+                        If BY#>0 : BY#=0-BY#
+                        Else 
+                           BY#=Abs(BY#)
+                        End If 
+                        BY#=-0.1
+                        BX#=0
+                        GROUNDED=False
+                     Else 
+                        If SHIPX#<CHECKX#                          
+                           BX#=0.2+((CHECKY#-SHIPXY#)/CDIST#)/10
+                        Else 
+                           BX#=-(0.2+((CHECKY#-SHIPXY#)/CDIST#)/10)
+                        End If 
+                        BY#=0.1
+                        Rem OFFSETX#=OFFSETX#-BX#
+                        Rem OFFSETY#=OFFSETY#-BY#
+                        If ROT>70 and ROT<120
+                           GROUNDED=True
+                           ROT=90
+                        End If
+                     End If 
+                  End If 
+               End If 
+               ENTPOS=0
+               Repeat 
+                  ENTPOS=ENTPOS+1
+                  If ENTTYPE(ENTPOS)=21
+                     CEX#=ENTX#(ENTPOS)-OFFSETX#
+                     CEY#=ENTY#(ENTPOS)-OFFSETY#
+                     POSOX#=Abs(Abs(CEX#)-Abs(CHECKX#))
+                     POSOY#=Abs(Abs(CEY#)-Abs(CHECKY#))
+                     If(((POSOX#*POSOX#)+(POSOY#*POSOY#))/100)<CDIST#
+                        If ENTMX#(ENTPOS)>0 : ENTMX#(ENTPOS)=0-ENTMX#(ENTPOS)
+                        Else : ENTMX#(ENTPOS)=Abs(ENTMX#(ENTPOS))
+                        End If 
+                        If ENTMY#(ENTPOS)>0 : ENTMY#(ENTPOS)=0-ENTMY#(ENTPOS)
+                        Else : ENTMY#(ENTPOS)=Abs(ENTMY#(ENTPOS))
+                        End If 
+                        ENTX#(ENTPOS)=ENTX#(ENTPOS)-(ENTMX#(ENTPOS)*2)
+                        ENTY#(ENTPOS)=ENTY#(ENTPOS)-(ENTMY#(ENTPOS)*2)
+                     End If 
+                  End If 
+               Until ENTPOS>MAXENTS
+               
+            End If 
+         End If 
+      End If 
+      Inc LPOS
+   End If
+   Until LPOS=NUMLEVELENT
+End If 
+
+
+
+Return 
+
+_UPDATEENTS:
+ENTPOS=0
+Repeat 
+   ENTPOS=ENTPOS+1
+   If ENTTYPE(ENTPOS)>0     
+      if ENTTIME(ENTPOS)>-2
+         ENTTIME(ENTPOS)=ENTTIME(ENTPOS)-1
+         If ENTTYPE(ENTPOS)=30
+            sam play 2
+            TEMPX=ENTX#(ENTPOS)
+            TEMPY=ENTY#(ENTPOS)
+            Gosub EXPLOSION
+            ENT=30
+            Gosub SPAWNENT
+            ENTTIME(ENTPOS)=0
+            ENTTYPE(ENTPOS)=0
+         End If
+      End If
+      If ENTTIME(ENTPOS)<0 and ENTTIME(ENTPOS)>-2
+         ENTTYPE(ENTPOS)=0
+      End If 
+      
+      If ENTTYPE(ENTPOS)=10
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+AIR#
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+Sin(270)/GRAV
+         ENTMX#(ENTPOS)=ENTMX#(ENTPOS)+Cos(270)/GRAV
+         TEMPX=ENTX#(ENTPOS)-OFFSETX#
+         TEMPY=ENTY#(ENTPOS)-OFFSETY#
+         If ENTTIME(ENTPOS)>0
+            TEMPR=5-ENTTIME(ENTPOS)/2
+         Else
+            TEMPR=1
+         End If
+         'Ink 4,0
+         'circle ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#,5-ENTTIME(ENTPOS)/2
+            {
+                     this.aoz.currentScreen.startDrawing();
+                     this.aoz.currentScreen.context.strokeStyle = "#AAAAAA";
+	                  this.aoz.currentScreen.context.lineWidth = ( this.aoz.currentScreen.scale.x + this.aoz.currentScreen.scale.y ) / 1.5;
+                     this.aoz.currentScreen.context.fillStyle = "#AAAAAA";
+                  	this.aoz.currentScreen.context.beginPath();
+                     this.aoz.currentScreen.context.arc( this.vars.TEMPX*this.aoz.currentScreen.scale.x, this.vars.TEMPY*this.aoz.currentScreen.scale.y, this.vars.TEMPR, 0, 2*3.14 );
+                     this.aoz.currentScreen.context.fill();
+	                  this.aoz.currentScreen.context.stroke();
+                    	this.aoz.currentScreen.context.closePath();                     
+	                  this.aoz.currentScreen.endDrawing();      
+              }
+      End If 
+      If ENTTYPE(ENTPOS)=11
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+AIR#
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+Sin(270)/GRAV
+         ENTMX#(ENTPOS)=ENTMX#(ENTPOS)+Cos(270)/GRAV
+         Ink 12
+         plot ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#
+      End If
+      If ENTTYPE(ENTPOS)=12
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+AIR#
+         ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+Sin(270)/GRAV
+         ENTMX#(ENTPOS)=ENTMX#(ENTPOS)+Cos(270)/GRAV
+         Ink 12
+         plot ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#
+         'Circle ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#,1
+      End If 
+      If ENTTYPE(ENTPOS)=20
+         CX=3*SCALE
+         CY=2*SCALE
+            For TENT=1 to MAXENTS+1
+               If ENTTYPE(TENT)=30
+               If (ENTX#(ENTPOS)-OFFSETX#)>(ENTX#(TENT)-OFFSETX#)-CX And (ENTX#(ENTPOS)-OFFSETX#)<(ENTX#(TENT)-OFFSETX#)+CX
+                  If (ENTY#(ENTPOS)-OFFSETY#)>(ENTY#(TENT)-OFFSETY#)-CY And (ENTY#(ENTPOS)-OFFSETY#)<(ENTY#(TENT)-OFFSETY#)+CY
+                     If ENTTYPE(TENT)=30
+                        ENTTIME(TENT)=ENTTIME(TENT)+10
+                           ENTTYPE(ENTPOS)=10   
+                           ENTTIME(ENTPOS)=8
+                           ENTMX#(ENTPOS)=0
+                           ENTMY#(ENTPOS)=0       
+                           sam play 3                
+                        Exit
+                     End If
+                  End If
+               End If
+               End If
+            Next TENT
+         Paste bob ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#,3,0.1,0.1,ENTROT(ENTPOS)
+      End If     
+      If ENTTYPE(ENTPOS)=30 and EDMODE=False
+         _DISTX#=ENTX#(ENTPOS)-(OFFSETX#+SHIPX#)
+         _DISTY#=ENTY#(ENTPOS)-(OFFSETY#+SHIPY#)
+         _TDIST#=(abs(_DISTX#*_DISTX#)+abs(_DISTY#*_DISTY#))
+         _TDIST#=sqr(_TDIST#)
+         _SPEEDX#=(_DISTX#/_TDIST#)/2
+         _SPEEDY#=(_DISTY#/_TDIST#)/2
+         If _TDIST#>80
+            ENTMX#(ENTPOS)=_SPEEDX#
+            ENTMY#(ENTPOS)=_SPEEDY# 
+         End If
+         ''   NSPEED#=2-(_TDIST#/40)
+         ''   If NSPEED#<1 : NSPEED#=1 : End If
+         ''   ENTMX#(ENTPOS)=_SPEEDX#*NSPEED#
+         ''   ENTMY#(ENTPOS)=_SPEEDY#*NSPEED#
+         'End if
+         CX=10 : CY=8
+         If SHIPX#>ENTX#(ENTPOS)-OFFSETX#-CX and SHIPX#<ENTX#(ENTPOS)-OFFSETX#+CX
+            If SHIPY#>ENTY#(ENTPOS)-OFFSETY#-CY and SHIPY#<ENTY#(ENTPOS)-OFFSETY#+CY
+               ENTMX#(ENTPOS)=ENTMX#(ENTPOS)+(BX#)
+               ENTMY#(ENTPOS)=ENTMY#(ENTPOS)+(BY#)
+               SHOWSHIELD=20
+            End If
+         End If
+         paste bob ENTX#(ENTPOS)-OFFSETX#,ENTY#(ENTPOS)-OFFSETY#,1,0.1,0.1
+      End If  
+      ENTX#(ENTPOS)=ENTX#(ENTPOS)-ENTMX#(ENTPOS)
+      ENTY#(ENTPOS)=ENTY#(ENTPOS)-ENTMY#(ENTPOS)
+   End If 
+Until ENTPOS>MAXENTS
+
+Return 
+
+EXPLOSION: 'we explode at TEMPX,TEMPY'
+For T=0 to 40
+   ENT=12
+   Gosub SPAWNENT
+   ROTO=RND(360)
+   ENTMX#(SPAWNENTPOS)=Cos(ROTO)*1+(rnd(10)/20)
+   ENTMY#(SPAWNENTPOS)=Sin(ROTO)*1+(rnd(10)/20)
+   ENTTIME(SPAWNENTPOS)=30+rnd(8)
+   ENTX#(SPAWNENTPOS)=TEMPX
+   ENTY#(SPAWNENTPOS)=TEMPY
+Next T
+Return
+
+
+
+
+SPAWNENT: 'spawn the desired entity'
+SPAWNENTPOS=0
+Repeat 
+   SPAWNENTPOS=SPAWNENTPOS+1
+Until ENTTYPE(SPAWNENTPOS)=0
+
+If ENT=10
+   ROTO=ROT+180
+   If ROTO>360 : ROTO=ROTO-360 : End If 
+   ENTMX#(SPAWNENTPOS)=Cos(ROTO)*2
+   ENTMY#(SPAWNENTPOS)=Sin(ROTO)*2
+   ENTTIME(SPAWNENTPOS)=6
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#-ENTMX#(SPAWNENTPOS)*6
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#-ENTMY#(SPAWNENTPOS)*6
+End If 
+If ENT=11
+   ROTO=ROT+170+Rnd(20)
+   If ROTO>360 : ROTO=ROTO-360 : End If 
+   ENTMX#(SPAWNENTPOS)=BX#+Cos(ROTO)*(1+rnd(1))
+   ENTMY#(SPAWNENTPOS)=BY#+Sin(ROTO)*(1+rnd(1))
+   ENTTIME(SPAWNENTPOS)=8+rnd(8)
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#-ENTMX#(SPAWNENTPOS)
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#-ENTMY#(SPAWNENTPOS)
+End If 
+If ENT=12
+   ROTO=ROT-10+Rnd(20)
+   If ROTO>360 : ROTO=ROTO-360 : End If 
+   ENTMX#(SPAWNENTPOS)=BX#+Cos(ROTO)*(1+rnd(1))
+   ENTMY#(SPAWNENTPOS)=BY#+Sin(ROTO)*(1+rnd(1))
+   ENTTIME(SPAWNENTPOS)=4+rnd(8)
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#-ENTMX#(SPAWNENTPOS)
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#-ENTMY#(SPAWNENTPOS)
+End If 
+If ENT=20
+   ROTO=360-ROT+90
+   If ROTO>360 : ROTO=ROTO-360 : End If 
+   If ROTO<360 : ROTO=ROTO+360 : End If 
+   ENTMX#(SPAWNENTPOS)=BX#+Cos(ROT)*6
+   ENTMY#(SPAWNENTPOS)=BY#+Sin(ROT)*6
+   ENTTIME(SPAWNENTPOS)=32
+   ENTROT(SPAWNENTPOS)=ROTO
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#-ENTMX#(SPAWNENTPOS)
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#-ENTMY#(SPAWNENTPOS)
+End If 
+If ENT=30
+   ROTO=ROT
+    If ROTO>360 : ROTO=ROTO-360 : End If 
+   ENTMX#(SPAWNENTPOS)=0
+   ENTMY#(SPAWNENTPOS)=0
+   ENTTIME(SPAWNENTPOS)=-20
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#+Rnd(600)-300
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#+Rnd(600)-640
+End If
+If ENT=1
+   ENTMX#(SPAWNENTPOS)=0
+   ENTMY#(SPAWNENTPOS)=0
+   ENTTIME(SPAWNENTPOS)=4
+   ENTX#(SPAWNENTPOS)=OFFSETX#+SHIPX#
+   ENTY#(SPAWNENTPOS)=OFFSETY#+SHIPY#
+End If 
+ENTTYPE(SPAWNENTPOS)=ENT
+Return 
+
+_FINDENTS:
+Return
+
+CREATETITLE:
+Screen Open 1,400,100,32,lowres
+Palette $000,$FFF,$555
+Curs Off : Flash Off
+Cls 0
+Ink 1,0
+Set Font "acme",30
+Text 0,22,"Gravity Shooter"
+Wait vbl
+
+For y=1 To 30
+   For x=1 To 399
+      d=point(x,y):d2=point(x,y-1) : d3=point(x-1,y)
+      If (d>0 and d2=0) or (d>0 and d3=0)
+         splash(x,y)=point(x,y)
+      End If
+   Next x
+Next y
+Screen Close 1
+Return
+
+Procedure SHOWWARNING[x,y,t$]
+   FC=FC+1 : FCFACT=FCDELAY/4
+   If FC>FCFACT and FC<FCFACT+FCFACT+1
+      Ink 2,0
+   Else
+      If FC>FCFACT*2 and FC<FCFACT*3+1
+         Ink 3,0
+      Else
+         If FC>FCFACT*3 and FC<FCFACT*4+1
+            Ink 2,0
+         Else
+            Ink 1,0
+         End If
+      End If
+   End If
+   If FC>FCDELAY
+      FC=0
+   End If
+   Text x,y,t$
+End Proc
