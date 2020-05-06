@@ -1,0 +1,14 @@
+Procedure MSGBOX[X,Y,MESSAGE$]
+	Screen Open 1,500,150,8,Hires
+	Curs Off
+	Screen Display 1,X,Y // Allows to locate box at a suitable position
+	Screen 1
+	Cls 7
+	Ink 1
+	Box 1,1 to 499,149
+	Pen 1
+	Paper 7
+	Locate 1,0: Print "Message Box"
+	Locate 1,2: Print MESSAGE$
+	Screen 0 // This returns to app screen so screen references may need changing to suit
+End Proc

@@ -1,0 +1,19 @@
+Procedure Get_Dot_Array[x,y]
+    For L=0 to 39
+        For C=0 to 39
+            d$=""
+            d=0
+            Gr Locate C+x,L+y
+            {
+                var pixel = this.aoz.currentScreen.context.getImageData( this.aoz.currentScreen.grPosition.x * this.aoz.currentScreen.scale.x, this.aoz.currentScreen.grPosition.y * this.aoz.currentScreen.scale.y, 1, 1 );
+                this.vars.d$ = this.aoz.utilities.getRGBAString( pixel.data[ 0 ], pixel.data[ 1 ], pixel.data[ 2 ], pixel.data[ 3 ] );
+            }
+            RGB$=Mid$(d$,2,6)
+            rgb=0
+            {
+                this.vars.rgb = parseInt( this.vars.RGB$, 16 );
+            }
+            Alph#(L*40+C)=rgb
+        Next C
+    Next L
+End Proc
