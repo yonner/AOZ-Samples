@@ -1,0 +1,15 @@
+Print Point RGB(100,100)
+
+Function "Point RGB", xpos, ypos
+    p$=""
+    rgb=0
+    Gr Locate xpos, ypos
+    {
+        var pixel = this.aoz.currentScreen.context.getImageData( this.aoz.currentScreen.grPosition.x * this.aoz.currentScreen.scale.x, this.aoz.currentScreen.grPosition.y * this.aoz.currentScreen.scale.y, 1, 1 );
+        this.vars.p$ = this.aoz.utilities.getRGBAString( pixel.data[ 0 ], pixel.data[ 1 ], pixel.data[ 2 ], pixel.data[ 3 ] );
+    }
+    RGB$=Mid$(p$,2,6)
+    {
+        this.vars.rgb = parseInt( this.vars.RGB$, 16 );
+    }
+End Function (rgb)
