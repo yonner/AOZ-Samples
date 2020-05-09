@@ -1,0 +1,612 @@
+{
+  version: 0.9.2.6 - 17/01/2020
+  rootPath: c:/users/jason/documents/aoz studio applications/demos/infinite_balls
+  infos:
+  {
+    "\"html/index.html_loader\"":
+    {
+      size: 20874
+      date: 2020-01-18T21:19:43.577Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700.eot_loader\"":
+    {
+      size: 20291
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700.svg_loader\"":
+    {
+      size: 63107
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700.ttf_loader\"":
+    {
+      size: 57924
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700.woff_loader\"":
+    {
+      size: 25824
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700.woff2_loader\"":
+    {
+      size: 19812
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700italic.eot_loader\"":
+    {
+      size: 16287
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700italic.svg_loader\"":
+    {
+      size: 64834
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700italic.ttf_loader\"":
+    {
+      size: 42904
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700italic.woff_loader\"":
+    {
+      size: 19552
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-700italic.woff2_loader\"":
+    {
+      size: 14840
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-italic.eot_loader\"":
+    {
+      size: 14889
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-italic.svg_loader\"":
+    {
+      size: 63376
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-italic.ttf_loader\"":
+    {
+      size: 35496
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-italic.woff_loader\"":
+    {
+      size: 17984
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-italic.woff2_loader\"":
+    {
+      size: 13748
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-regular.eot_loader\"":
+    {
+      size: 19246
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-regular.svg_loader\"":
+    {
+      size: 62033
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-regular.ttf_loader\"":
+    {
+      size: 52372
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-regular.woff_loader\"":
+    {
+      size: 24320
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/expletus-sans-v13-latin-regular.woff2_loader\"":
+    {
+      size: 19104
+      date: 2019-07-30T03:50:08.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100.eot_loader\"":
+    {
+      size: 39649
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100.svg_loader\"":
+    {
+      size: 52130
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100.ttf_loader\"":
+    {
+      size: 107492
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100.woff_loader\"":
+    {
+      size: 45672
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100.woff2_loader\"":
+    {
+      size: 33536
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100italic.eot_loader\"":
+    {
+      size: 43331
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100italic.svg_loader\"":
+    {
+      size: 61826
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100italic.ttf_loader\"":
+    {
+      size: 114696
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100italic.woff_loader\"":
+    {
+      size: 50108
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-100italic.woff2_loader\"":
+    {
+      size: 36536
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200.eot_loader\"":
+    {
+      size: 39965
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200.svg_loader\"":
+    {
+      size: 51756
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200.ttf_loader\"":
+    {
+      size: 105692
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200.woff_loader\"":
+    {
+      size: 45624
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200.woff2_loader\"":
+    {
+      size: 33660
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200italic.eot_loader\"":
+    {
+      size: 44166
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200italic.svg_loader\"":
+    {
+      size: 62498
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200italic.ttf_loader\"":
+    {
+      size: 113220
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200italic.woff_loader\"":
+    {
+      size: 50772
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-200italic.woff2_loader\"":
+    {
+      size: 37316
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300.eot_loader\"":
+    {
+      size: 39709
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300.svg_loader\"":
+    {
+      size: 51323
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300.ttf_loader\"":
+    {
+      size: 104884
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300.woff_loader\"":
+    {
+      size: 45292
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300.woff2_loader\"":
+    {
+      size: 33564
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300italic.eot_loader\"":
+    {
+      size: 44289
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300italic.svg_loader\"":
+    {
+      size: 62040
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300italic.ttf_loader\"":
+    {
+      size: 112080
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300italic.woff_loader\"":
+    {
+      size: 50964
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-300italic.woff2_loader\"":
+    {
+      size: 37488
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500.eot_loader\"":
+    {
+      size: 40712
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500.svg_loader\"":
+    {
+      size: 52322
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500.ttf_loader\"":
+    {
+      size: 106348
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500.woff_loader\"":
+    {
+      size: 46360
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500.woff2_loader\"":
+    {
+      size: 34312
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500italic.eot_loader\"":
+    {
+      size: 45343
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500italic.svg_loader\"":
+    {
+      size: 62747
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500italic.ttf_loader\"":
+    {
+      size: 112740
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500italic.woff_loader\"":
+    {
+      size: 51916
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-500italic.woff2_loader\"":
+    {
+      size: 38420
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600.eot_loader\"":
+    {
+      size: 40909
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600.svg_loader\"":
+    {
+      size: 52161
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600.ttf_loader\"":
+    {
+      size: 109844
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600.woff_loader\"":
+    {
+      size: 47420
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600.woff2_loader\"":
+    {
+      size: 35300
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600italic.eot_loader\"":
+    {
+      size: 45252
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600italic.svg_loader\"":
+    {
+      size: 62328
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600italic.ttf_loader\"":
+    {
+      size: 116040
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600italic.woff_loader\"":
+    {
+      size: 52576
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-600italic.woff2_loader\"":
+    {
+      size: 39028
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700.eot_loader\"":
+    {
+      size: 41084
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700.svg_loader\"":
+    {
+      size: 52207
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700.ttf_loader\"":
+    {
+      size: 107432
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700.woff_loader\"":
+    {
+      size: 46692
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700.woff2_loader\"":
+    {
+      size: 34608
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700italic.eot_loader\"":
+    {
+      size: 44757
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700italic.svg_loader\"":
+    {
+      size: 63002
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700italic.ttf_loader\"":
+    {
+      size: 113272
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700italic.woff_loader\"":
+    {
+      size: 51236
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-700italic.woff2_loader\"":
+    {
+      size: 37868
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-italic.eot_loader\"":
+    {
+      size: 43955
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-italic.svg_loader\"":
+    {
+      size: 63526
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-italic.ttf_loader\"":
+    {
+      size: 112664
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-italic.woff_loader\"":
+    {
+      size: 50656
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-italic.woff2_loader\"":
+    {
+      size: 37404
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-regular.eot_loader\"":
+    {
+      size: 39533
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-regular.svg_loader\"":
+    {
+      size: 53494
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-regular.ttf_loader\"":
+    {
+      size: 105184
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-regular.woff_loader\"":
+    {
+      size: 45276
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/fonts/google/ibm-plex-mono-v5-latin-ext_cyrillic_latin_cyrillic-ext-regular.woff2_loader\"":
+    {
+      size: 33408
+      date: 2019-07-30T04:11:32.000Z
+    }
+    "\"html/resources/images/1.js_loader\"":
+    {
+      size: 9480
+      date: 2020-01-18T21:19:43.406Z
+    }
+    "\"html/resources/images/2.js_loader\"":
+    {
+      size: 71160
+      date: 2020-01-18T21:19:43.423Z
+    }
+    "\"html/run/amal.js_loader\"":
+    {
+      size: 12612
+      date: 2020-01-18T21:19:43.554Z
+    }
+    "\"html/run/amaltranspiler.js_loader\"":
+    {
+      size: 46340
+      date: 2020-01-18T21:19:43.555Z
+    }
+    "\"html/run/aoz.js_loader\"":
+    {
+      size: 86277
+      date: 2020-01-18T21:19:43.556Z
+    }
+    "\"html/run/application.js_loader\"":
+    {
+      size: 51640
+      date: 2020-01-18T21:19:43.381Z
+    }
+    "\"html/run/banks.js_loader\"":
+    {
+      size: 28491
+      date: 2020-01-18T21:19:43.559Z
+    }
+    "\"html/run/bob.js_loader\"":
+    {
+      size: 6783
+      date: 2020-01-18T21:19:43.562Z
+    }
+    "\"html/run/dos.js_loader\"":
+    {
+      size: 3126
+      date: 2020-01-18T21:19:43.563Z
+    }
+    "\"html/run/errors.js_loader\"":
+    {
+      size: 14117
+      date: 2020-01-18T21:19:43.564Z
+    }
+    "\"html/run/files.js_loader\"":
+    {
+      size: 2337
+      date: 2020-01-18T21:19:43.565Z
+    }
+    "\"html/run/filesystem.js_loader\"":
+    {
+      size: 28964
+      date: 2020-01-18T21:19:43.566Z
+    }
+    "\"html/run/fontfaceobserver.standalone.js_loader\"":
+    {
+      size: 4379
+      date: 2020-01-18T21:19:43.567Z
+    }
+    "\"html/run/fonts.js_loader\"":
+    {
+      size: 19545
+      date: 2020-01-18T21:19:43.567Z
+    }
+    "\"html/run/renderer.js_loader\"":
+    {
+      size: 21367
+      date: 2020-01-18T21:19:43.569Z
+    }
+    "\"html/run/resources/cursor.js_loader\"":
+    {
+      size: 209
+      date: 2020-01-18T21:19:43.546Z
+    }
+    "\"html/run/resources/full_screen.png_loader\"":
+    {
+      size: 996
+      date: 2019-08-07T04:22:50.000Z
+    }
+    "\"html/run/resources/small_screen.png_loader\"":
+    {
+      size: 983
+      date: 2019-08-07T04:22:38.000Z
+    }
+    "\"html/run/resources/star_night.jpeg_loader\"":
+    {
+      size: 2829668
+      date: 2019-06-26T10:46:46.000Z
+    }
+    "\"html/run/screen.js_loader\"":
+    {
+      size: 69413
+      date: 2020-01-18T21:19:43.570Z
+    }
+    "\"html/run/sprites.js_loader\"":
+    {
+      size: 19876
+      date: 2020-01-18T21:19:43.571Z
+    }
+    "\"html/run/textwindow.js_loader\"":
+    {
+      size: 61563
+      date: 2020-01-18T21:19:43.572Z
+    }
+    "\"html/run/utilities.js_loader\"":
+    {
+      size: 49609
+      date: 2020-01-18T21:19:43.574Z
+    }
+    "\"html/run/v1_0_bobs.js_loader\"":
+    {
+      size: 2038
+      date: 2020-01-18T21:13:13.813Z
+    }
+    "\"html/run/v1_0_screens.js_loader\"":
+    {
+      size: 2056
+      date: 2020-01-18T21:13:13.957Z
+    }
+    "\"html/run/v1_0_textwindows.js_loader\"":
+    {
+      size: 2082
+      date: 2020-01-18T21:13:14.059Z
+    }
+    "\"main.aoz_loader\"":
+    {
+      size: 11673
+      date: 2020-01-04T17:44:32.000Z
+    }
+    "\"manifest.hjson_loader\"":
+    {
+      size: 11412
+      date: 2019-12-22T20:14:30.000Z
+    }
+    "\"resources/images/1.png_loader\"":
+    {
+      size: 7092
+      date: 2019-06-20T16:05:22.000Z
+    }
+    "\"resources/images/2.png_loader\"":
+    {
+      size: 53350
+      date: 2019-12-25T16:03:18.000Z
+    }
+  }
+}

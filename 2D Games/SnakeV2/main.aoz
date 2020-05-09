@@ -1,0 +1,331 @@
+// Enter your code here and click "Run"
+#manifest:"pc"
+#fullScreen:true
+#splashScreen:false
+sw=Screen Width
+sh=Screen Height
+Screen Open 0,sw,sh,32,Lowres
+Curs Off
+Double buffer
+Autoback 1
+
+font_height = 16
+font_name$ = "expletus sans"
+Set Font font_name$, font_height
+
+// 576
+Dim body_x(576)
+Dim body_y(576)
+
+Dim tempbody_x(576)
+Dim tempbody_y(576)
+
+tail_index=2
+
+body_x(0)=5
+body_y(0)=5
+
+body_x(1)=4
+body_y(1)=5
+
+body_x(2)=3
+body_y(2)=5
+
+PX=1
+PY=6
+PSPEED=32    // Speed of movement (jump in pixels)
+PMX=PSPEED  // Motion start direction
+PMY=0       //
+PSCALE=2  // Scale size
+DF=1        // Frame variable start number - Left to right is 1 to 5, Down is 6 to 10 etc.
+FR=0        // Frame offset.
+FRA=1       // Frame offset counter.
+
+// Grid markers
+
+North = -1
+East = 2
+South = 1
+West = -2
+
+MUSH = 5
+
+WALL = 6
+
+Direction = East
+
+// 1280, 720 - screen size
+// 32 , 18 - grid size
+
+Dim grid(32,18)
+
+// initial mushroom
+mushx = RND(32)
+mushy = RND(18)
+grid(mushx, mushy) = MUSH
+
+hit = false
+
+lives = 3
+
+Ink 1
+
+Global sw,sh, grid(), PSCALE, body_x(), body_y(), tempbody_x(), tempbody_y()
+
+Global Direction, North, East, South, West, MUSH, WALL, font_name$, tail_index, mushx, mushy, hit
+
+For x = 0 to 12 Step 1
+    generateWall[x, 0]
+Next
+For x = 20 to 32 Step 1
+    generateWall[x, 0]
+Next
+
+For x = 0 to 12 Step 1
+    generateWall[x, 18]
+Next
+For x = 20 to 32 Step 1
+    generateWall[x, 18]
+Next
+
+For y = 0 to 18 Step 1
+    generateWall[0, y]
+Next
+For y = 0 to 18 Step 1
+    generateWall[32, y]
+Next
+
+Do
+    Wait 0.16
+
+    moveSnake
+
+    drawSnake
+
+    eatFood
+
+    checkKeys
+
+    checkEndGame
+
+    If hit = true
+        Exit
+    End IF
+
+    Bob 569,mushx * 32 ,mushy * 32,21
+    Bob Scale 569,PSCALE,PSCALE
+
+    Bob Draw
+
+    Wait Vbl
+    Screen Swap
+
+loop
+
+Procedure checkEndGame
+
+    For i = 1 To tail_index Step 1
+        If body_x(i) = body_x(0) And body_y(i) = body_y(0)
+            hit = true
+        End If
+    Next
+
+    x = body_x(0)
+    y = body_y(0)
+
+    If Direction = South
+        Inc y
+    End IF
+    If Direction = North
+        Dec y
+    End IF
+    If Direction = West
+        Dec x
+    End IF
+    If Direction = East
+        Inc x
+    End IF
+
+    If x > 32
+        x = 0
+    End If
+    If x < 0
+        x = 32
+    End If
+
+    If y > 18
+        y = 0
+    End If
+    If y < 0
+        y = 18
+    End If
+
+    If grid(x, y) = WALL
+        hit = true
+    End If
+
+End Proc
+
+Procedure drawSnake
+
+    For i = 0 To tail_index Step 1
+        Bob i+1, body_x(i) * 32, body_y(i) * 32, 1
+        Bob Scale i+1,PSCALE,PSCALE
+    Next
+
+End Proc
+
+Procedure eatFood
+
+    If grid(body_x(0), body_y(0) ) = MUSH
+
+        grid(body_x(0), body_y(0) ) = 0
+
+        addPart
+
+        generateFood
+
+        generateWall[-1, -1]
+
+    End If
+End Proc
+
+Procedure addPart
+
+    partdir = grid(body_x(tail_index), body_y(tail_index))
+
+    x = body_x(tail_index)
+    y = body_y(tail_index)
+
+    If partdir = South
+        Inc y
+    End IF
+    If partdir = North
+        Dec y
+    End IF
+    If partdir = West
+        Inc x
+    End IF
+    If partdir = East
+        Dec x
+    End IF
+
+    Inc tail_index
+    body_x(tail_index) = x
+    body_y(tail_index) = y
+
+    grid(body_x(tail_index), body_y(tail_index)) = dir
+End Proc
+
+Procedure Check_X_Wrap[xpos]
+    If xpos > 32
+        xxpos = 0
+    End If
+    If xpos < 0
+        xpos = 32
+    End If
+End Proc[xpos]
+
+Procedure ChecYWrap[ypos]
+    If ypos > 32
+        ypos = 0
+    End If
+    If ypos < 0
+        ypos = 32
+    End If
+End Proc[ypos]
+
+Procedure moveSnake
+    x = body_x(0)
+    y = body_y(0)
+
+    If Direction = South
+        Inc y
+    End IF
+    If Direction = North
+        Dec y
+    End IF
+    If Direction = West
+        Dec x
+    End IF
+    If Direction = East
+        Inc x
+    End IF
+
+    If x > 32
+        x = 0
+    End If
+    If x < 0
+        x = 32
+    End If
+
+//    x = Check_X_Wrap[ x ]
+
+    If y > 18
+        y = 0
+    End If
+    If y < 0
+        y = 18
+    End If
+
+    tempbody_x(0) = x
+    tempbody_y(0) = y
+
+    For i = 0 To tail_index-1 Step 1
+        tempbody_x( i + 1) = body_x(i)
+        tempbody_y( i + 1) = body_y(i)
+    Next
+    For i = 0 To tail_index Step 1
+        body_x(i) = tempbody_x(i)
+        body_y(i) = tempbody_y(i)
+    Next
+End Proc
+
+Procedure generateFood
+    mushx = RND(32)
+    mushy = RND(18)
+    grid(mushx, mushy) = MUSH
+End Proc
+
+Procedure generateWall[xpos, ypos]
+
+    wallx = xpos
+    wally = ypos
+    If xpos = -1
+        wallx = RND(32)
+    End If
+    IF ypos = -1
+        wally = RND(18)
+    End If
+    grid(wallx, wally) = WALL
+
+    Paste Bob wallx * 32, wally * 32, 22, PSCALE
+End Proc
+
+Procedure checkKeys
+    If Key State(37)
+        //DF=11
+        Direction = West
+    End If
+    If Key State(39)
+        //DF=1
+        Direction = East
+    End If
+    If Key State(38)
+        //DF=16
+        Direction = North
+    End if
+    If Key State(40)
+        //DF=6
+        Direction = South
+    End If
+End Proc
+
+Procedure Center_Text[ y, t$, height ]
+
+    Shared font_name$
+
+    Set Font font_name$, height
+    Text Screen Width / 2, y, t$, "#center"
+
+End Proc

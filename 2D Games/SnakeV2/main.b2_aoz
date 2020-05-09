@@ -1,0 +1,318 @@
+// Enter your code here and click "Run"
+#manifest:"pc"
+#fullScreen:true
+#splashScreen:false
+sw=Screen Width
+sh=Screen Height
+Screen Open 0,sw,sh,32,Lowres
+Curs Off
+Double buffer
+Autoback 1
+//PX=sw/2     // X coordinate centre of screen
+//PY=sh/2     // Y coordinate centre of screen
+
+font_height = 16
+font_name$ = "expletus sans"
+Set Font font_name$, font_height
+
+// initial length
+snakeLen=2
+
+// initial grow
+grow = true
+growLen = 0
+
+//headx=1 * 32
+//heady=0
+
+// 576
+Dim body_x(576)
+Dim body_y(576)
+
+tailx=0
+taily=6
+
+body_x(0)=32
+body_y(0)=0
+
+PX=1
+PY=6
+PSPEED=32    // Speed of movement (jump in pixels)
+PMX=PSPEED  // Motion start direction
+PMY=0       //
+PSCALE=2  // Scale size
+DF=1        // Frame variable start number - Left to right is 1 to 5, Down is 6 to 10 etc.
+FR=0        // Frame offset.
+FRA=1       // Frame offset counter.
+
+// Grid markers
+
+North = 1
+East = 2
+South = 3
+West = 4
+
+MUSH = 5
+
+Direction = East
+
+// 1280, 720 - screen size
+// 32 , 18 - grid size
+
+Dim grid(32,18)
+grid(0, 6) = Direction
+grid(1, 0) = Direction
+
+mushx = RND(32)
+mushy = RND(18)
+
+grid(mushx, mushy) = MUSH
+
+Ink 1
+
+Global PX,PY,sw,sh, grid(), tailx, taily, PSCALE, body_x(), body_y(), snakeLen
+
+Global DF,PMX,PMY,PSPEED, Direction, North, East, South, West, font_name$
+
+Do
+    Wait 0.16
+
+    // needs fixing
+ //   CheckWrapAround
+
+    CheckKeys_2
+
+    // increment animation frames
+    Add FR,FRA : If FR=4 or FR=0 then FRA=-FRA
+
+    grid(PX, PY) = Direction
+
+//    oldheadx = PX
+//    oldheady = PY
+
+//    Add PX,PMX
+//    Add PY,PMY
+
+    // Check eat mushroom
+    If (grid(PX, PY ) = MUSH)
+        growLen = 3
+        grow = true
+        mushx = RND(32)
+        mushy = RND(18)
+        grid(mushx, mushy) = MUSH
+    End IF
+
+    Move_Head
+
+    // show head 
+    Bob 567, PX * 32,PY * 32,DF+FR
+    Bob Scale 567,PSCALE,PSCALE
+
+    If growLen >= 0
+        Add growLen, -1
+        Add snakeLen, 1
+    End if
+
+ //   prevx=oldheadx
+ //   prevy=oldheady
+
+    If (snakeLen > 2)
+        // For i = 0 To snakeLen  - 2  Step 1
+
+        //     If grow = true
+        //         //prevx = body_x(i)
+        //         //prevy = body_y(i)
+        //         If i = 0
+        //             UpdateBodyParts[i, oldheadx, oldheady]
+        //         Else
+        //             UpdateBodyParts[i, prevx, prevy]
+        //         End if
+        //     Else
+        //         If i = 0
+        //             prevx = oldheadx
+        //             prevy = oldheady
+        //             UpdateBodyParts[i, oldheadx, oldheady]
+        //         Else
+        //             UpdateBodyParts[i, prevx, prevy]
+        //         End if
+        //     End If
+        // Next
+    End if
+
+    Bob 569,mushx * 32 ,mushy * 32,21
+    Bob Scale 569,PSCALE,PSCALE
+
+    Bob 568, tailx * 32,taily * 32,1
+    Bob Scale 568,PSCALE,PSCALE
+
+    Bob Draw
+
+    If growLen < 0
+        growLen = 0
+        grow = false
+        //move tail
+        UpdateTailParts
+
+        //Print snakeLen
+    End If
+
+
+
+//    Set Font font_name$, 8
+    Ink 1
+ //   Text PX * 32, PY * 32, "H"
+ //   Text tailx * 32, taily * 32, "T"
+
+    Ink 1
+    Center_Text [60, STR$(PX), 20]
+
+    Wait Vbl
+    Screen Swap    
+
+    Ink 0
+    Center_Text [60, STR$(PX), 20]
+loop
+
+Procedure Move_Head
+    If Direction = East
+        //Add PX, 1
+        Inc PX
+    End if
+    If Direction = South
+        //Add PY, 1
+        Inc PY
+    End if
+    If Direction = West
+        //Add PX, -1
+        Dec PX
+    End if
+    If Direction = North
+        //Add PY, -1
+        Dec PY
+    End if
+End Proc
+
+Procedure UpdateBodyParts[partIndex, x , y]
+    
+    Bob partIndex,body_x(partIndex),body_y(partIndex),1
+    Bob Scale partIndex,PSCALE,PSCALE
+
+    body_x(partIndex) = x
+    body_y(partIndex) = y
+
+    if grid(x /32, y /32) = East
+        Add body_x(partIndex), 32
+    end if
+    if grid(x /32, y /32) = South
+        Add body_y(partIndex), 32
+    end if
+    if grid(x /32, y /32) = West
+        Add body_x(partIndex), -32
+    end if
+    if grid(x /32, y /32) = North
+        Add body_y(partIndex), -32
+    end if
+End Proc
+
+Procedure UpdateTailParts
+
+    oldtailx = tailx
+    oldtaily = taily
+
+    //Bob 568,tailx * 32,taily * 32,1
+    //Bob Scale 568,PSCALE,PSCALE
+
+    If grid(tailx, taily) = East
+        //Add tailx, 1
+        Inc tailx
+    End if
+    If grid(tailx, taily) = South
+        //Add taily, 1
+        Inc taily
+    End if
+    If grid(tailx, taily) = West
+        //Add tailx, -1
+        Dec tailx
+    End if
+    If grid(tailx, taily) = North
+        //Add taily, -1
+        Dec taily
+    End if
+
+    // clear old grid
+    grid( oldtailx, oldtaily) = 0
+End Proc
+
+Procedure CheckWrapAround
+    If PX>sw
+        PX=-32
+    End If 
+    If PX<-32
+        PX=sw
+    End If 
+    If PY>sh
+        PY=-32
+    End If 
+    If PY<-32
+        PY=sh
+    End If 
+End Proc
+
+Procedure CheckKeys_2
+    If Key State(37)
+        DF=11
+        Direction = West
+    End If 
+    If Key State(39)
+        DF=1
+        Direction = East
+    End If 
+    If Key State(38)
+        DF=16
+        Direction = North
+    End if
+    If Key State(40)
+        DF=6
+        Direction = South
+    End If 
+End Proc
+
+Procedure CheckKeys
+    If Key State(37)
+        DF=11
+        PMX=-PSPEED
+        PMY=0
+        Direction = West
+        //print "left"
+    End If 
+    If Key State(39)
+        DF=1
+        PMX=PSPEED
+        PMY=0
+        Direction = East
+        //print "right"
+    End If 
+    If Key State(38)
+        DF=16
+        PMY=-PSPEED
+        PMX=0
+        Direction = North
+        //print "up"
+    end if
+    If Key State(40)
+        DF=6
+        PMY=PSPEED
+        PMX=0
+        Direction = South
+        //print "down"
+    End If 
+End Proc
+
+Procedure Center_Text[ y, t$, height ]
+
+    Shared font_name$
+
+    Set Font font_name$, height
+    Text Screen Width / 2, y, t$, "#center"
+
+End Proc
