@@ -1,0 +1,134 @@
+// By - Jason Wroe - 29/5/20
+// This code allows you to scan for a connected Xbox One controller (tested using Model 1708)
+
+///
+// GamePad code based on this reference :-
+// https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
+//
+// X And Y axis values are returned in the ranges of -1 to 1
+
+X_AXIS_LEFTSTICK = 0
+Y_AXIS_LEFTSTICK = 1
+
+X_AXIS_RIGHTSTICK = 2
+Y_AXIS_RIGHTSTICK = 3
+
+LEFT_TRIGGER = 6
+RIGHT_TRIGGER = 7
+LEFT_SHOULDER = 4
+RIGHT_SHOULDER = 5
+Y_BUTTON = 3
+X_BUTTON = 2
+B_BUTTON = 1
+A_BUTTON = 0
+DPAD_UP = 12
+DPAD_DOWN = 13
+DPAD_LEFT = 14
+DPAD_RIGHT = 15
+LEFTSTICK_DOWN = 10
+RIGHTSTICK_DOWN = 11
+BACK_BUTTON = 8
+START_BUTTON = 9
+
+Do
+
+	locate 10,11: print Key Scan;"   "
+
+	ScanGamePadButtons
+	button = Param
+	locate 10,12: print "Button ID =" + Str$(button)
+
+	ScanGamePadAxis[X_AXIS_LEFTSTICK]
+	x_axis_l# = Param#
+	locate 10,14: print "Left Stick X Axis =" + Str$(x_axis_l#)
+
+	ScanGamePadAxis[Y_AXIS_LEFTSTICK]
+	y_axis_l# = Param#
+	locate 10,15: print "Left Stick Y Axis =" + Str$(y_axis_l#)
+
+	ScanGamePadAxis[X_AXIS_RIGHTSTICK]
+	x_axis_r# = Param#
+	locate 10,17: print "Right Stick X Axis =" + Str$(x_axis_r#)
+
+	ScanGamePadAxis[Y_AXIS_RIGHTSTICK]
+	y_axis_r# = Param#
+	locate 10,18: print "Right Stick Y Axis =" + Str$(y_axis_r#)
+
+	Wait vbl
+Loop
+
+Function "Key Scan"
+    _code = 0
+    for _f=0 to 255
+        if Key State (_f) then _code = _f
+    next _f
+End Function ( _code )
+
+Procedure ScanGamePadAxis[AXIS]
+r=0
+{
+	var gamepadInfo = document.getElementById("gamepad-info");
+	var interval;
+
+	if (!('ongamepadconnected' in window)) {
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+
+		for (var i = 0; i < gamepads.length; i++) {
+			var gp = gamepads[i];
+			if (gp) {
+				var controllers = {};
+
+				controllers[i] = gp;
+
+				for (j in controllers) {
+					var controller = controllers[j];
+					this.vars.r = controller.axes[this.vars.AXIS];
+				}
+			}
+		}
+	}
+}
+End Proc[r]
+
+Procedure ScanGamePadButtons
+r=0
+{
+	var gamepadInfo = document.getElementById("gamepad-info");
+	var interval;
+
+	if (!('ongamepadconnected' in window)) {
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		for (var i = 0; i < gamepads.length; i++) {
+			var gp = gamepads[i];
+			if (gp) {
+				var controllers = {};
+				controllers[i] = gp;
+
+				for (j in controllers) {
+					var controller = controllers[j];
+
+					for (var a = 0; a < controller.buttons.length; a++) {
+						var val = controller.buttons[a];
+						var pressed = val == 1.0;
+						var touched = false;
+						if (typeof (val) == "object") {
+							pressed = val.pressed;
+							if ('touched' in val) {
+								touched = val.touched;
+							}
+							val = val.value;
+						}
+						var pct = Math.round(val * 100) + "%";
+						if (pressed) {
+							this.vars.r = a;
+						}
+						if (touched) {
+							// Can do something with analog buttons here???
+						}
+					}
+				}
+			}
+		}
+	}
+}
+End Proc[r]
