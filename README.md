@@ -44,7 +44,7 @@ A collection of games and useful code snippets provided by the AOZ community.
 
 * User Functions
 
-  AnimateMove - Sample code on to move a spritit and animate (Dave B)
+  AnimateMove - Sample code to move a sprite and animate it (Dave B)
   
   click sprites -
   
